@@ -91,12 +91,17 @@ if (process.env.ENABLE_CORS === 'true') {
 
 app.use(express.json({ limit: '2mb' }));
 
-// Fluxio 主入口在 /fluxio，根路径为旧 ffmpeg 工具
-app.get('/', (_, res) => res.sendFile(path.join(STATIC_DIR, 'index.html')));
-app.get(/^\/fluxio(\/.*)?$/, (_, res) => res.sendFile(path.join(STATIC_DIR, 'fluxio.html')));
-app.get(/^\/fluxio\/tasks\/[^/]+$/, (_, res) => res.sendFile(path.join(STATIC_DIR, 'fluxio.html')));
-app.get(/^\/fluxio\/tasks\/[^/]+\/files\/[^/]+$/, (_, res) => res.sendFile(path.join(STATIC_DIR, 'fluxio.html')));
-app.get(/^\/fluxio\/tasks\/?$/, (_, res) => res.redirect(301, '/fluxio'));
+// Fluxio 主入口为 /；旧版 FFmpeg 控制台在 /legacy；/fluxio 重定向到 /
+app.get(/^\/fluxio(\/.*)?$/, (req, res) => {
+  const rest = req.path.replace(/^\/fluxio/, '') || '/';
+  res.redirect(301, rest || '/');
+});
+app.get('/legacy', (_, res) => res.sendFile(path.join(STATIC_DIR, 'index.html')));
+
+app.get('/', (_, res) => res.sendFile(path.join(STATIC_DIR, 'fluxio.html')));
+app.get(/^\/tasks\/[^/]+$/, (_, res) => res.sendFile(path.join(STATIC_DIR, 'fluxio.html')));
+app.get(/^\/tasks\/[^/]+\/files\/[^/]+$/, (_, res) => res.sendFile(path.join(STATIC_DIR, 'fluxio.html')));
+app.get(/^\/tasks\/?$/, (_, res) => res.redirect(301, '/'));
 
 app.use(express.static(STATIC_DIR));
 app.use('/previews', express.static(PREVIEW_DIR));
@@ -554,7 +559,7 @@ app.get('/api/download-zip', async (req, res) => {
 });
 
 app.use((_, res) => {
-  res.sendFile(path.join(STATIC_DIR, 'index.html'));
+  res.sendFile(path.join(STATIC_DIR, 'fluxio.html'));
 });
 
 app.listen(PORT, () => {

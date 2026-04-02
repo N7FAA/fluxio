@@ -1,10 +1,10 @@
 /**
  * Fluxio - 按 product-spec-final.md 实现
- * 路由：/fluxio, /fluxio/tasks/:taskId, /fluxio/tasks/:taskId/files/:fileId
+ * 路由：/, /tasks/:taskId, /tasks/:taskId/files/:fileId（主路径）
  */
 
 (function () {
-  const BASE = '/fluxio';
+  const BASE = '/';
   const LIMITS = {
     image: { maxFiles: 30, maxTotalMB: 200, maxFileMB: 200 },
     motion: { maxFiles: 10, maxTotalMB: 200, maxFileMB: 200 },
@@ -82,9 +82,8 @@
   };
 
   function getRoute() {
-    const p = window.location.pathname.replace(/\/$/, '') || '/fluxio';
-    if (!p.startsWith('/fluxio')) return { page: 'home' };
-    const rest = p.slice('/fluxio'.length).replace(/^\//, '');
+    const p = window.location.pathname.replace(/\/$/, '') || '/';
+    const rest = p === '/' ? '' : p.slice(1);
     if (!rest) return { page: 'home' };
     const m1 = rest.match(/^tasks\/([^/]+)$/);
     if (m1) return { page: 'task-list', taskId: m1[1] };
@@ -94,9 +93,9 @@
   }
 
   function navigateTo(page, taskId, fileId) {
-    let p = BASE;
-    if (page === 'task-list' && taskId) p = `${BASE}/tasks/${taskId}`;
-    else if (page === 'file-detail' && taskId && fileId) p = `${BASE}/tasks/${taskId}/files/${fileId}`;
+    let p = '/';
+    if (page === 'task-list' && taskId) p = `/tasks/${taskId}`;
+    else if (page === 'file-detail' && taskId && fileId) p = `/tasks/${taskId}/files/${fileId}`;
     if (window.location.pathname !== p) {
       window.history.pushState({}, '', p);
     }
