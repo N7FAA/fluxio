@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluxio · 让动效轻松落地</title>
+  <link rel="stylesheet" href="fluxio.css">
+</head>
+<body>
+  <main class="fluxio">
+    <!-- Chrome：仅第一、二级（首页/输出设置）显示 -->
+    <div class="fluxio-chrome" data-chrome>
+      <header class="fluxio-header">
+        <h1 class="fluxio-title">Fluxio, 让动效轻松落地</h1>
+        <p class="fluxio-subtitle">面向线上页面的开放转码工具，帮助素材更快实现</p>
+      </header>
+      <nav class="fluxio-tabs">
+        <div class="fluxio-tabs-track">
+          <button type="button" class="fluxio-tab fluxio-tab--active" data-tab="image">图片</button>
+          <button type="button" class="fluxio-tab" data-tab="motion">动态图像</button>
+          <button type="button" class="fluxio-tab" data-tab="video">视频</button>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Stage：主内容区，整页替换 -->
+    <div class="fluxio-stage" data-stage>
+      <!-- 第一级：首页上传 -->
+      <section class="fluxio-stage-page fluxio-page-home" data-page="home">
+        <section class="fluxio-upload" data-upload-section>
+          <input type="file" class="fluxio-file-input" data-file-input accept="image/png,image/jpeg,image/webp" multiple>
+          <div class="fluxio-upload-box" data-upload-box>
+            <p class="fluxio-upload-text">支持点击或拖拽上传</p>
+            <p class="fluxio-upload-hint" data-hint-format>支持 PNG、JPG、JPEG、WEBP 格式，单文件不超过 200MB</p>
+            <button type="button" class="fluxio-btn fluxio-btn--primary fluxio-upload-btn" data-upload-btn>上传文件</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- 第二级：输出设置 -->
+      <section class="fluxio-stage-page fluxio-output-settings" data-page="output-settings" hidden>
+        <div class="fluxio-output-layout">
+          <div class="fluxio-left-panel">
+            <div class="fluxio-file-grid" data-file-grid></div>
+            <div class="fluxio-left-footer">
+              <button type="button" class="fluxio-link fluxio-clear-btn" data-clear-btn>清空</button>
+              <button type="button" class="fluxio-btn fluxio-btn--secondary fluxio-add-btn" data-add-btn>添加文件</button>
+            </div>
+          </div>
+          <div class="fluxio-right-panel">
+            <p class="fluxio-output-label">输出设置</p>
+            <div class="fluxio-output-options">
+              <div class="fluxio-option-group" data-format-group>
+                <span class="fluxio-option-group-label">格式</span>
+                <div class="fluxio-option-group-options" data-format-options></div>
+              </div>
+              <div class="fluxio-option-group fluxio-framerate-wrap" data-framerate-wrap hidden>
+                <span class="fluxio-option-group-label">帧率</span>
+                <div class="fluxio-option-group-options" data-framerate-options></div>
+              </div>
+              <div class="fluxio-option-group" data-resolution-group>
+                <span class="fluxio-option-group-label">分辨率</span>
+                <div class="fluxio-option-group-options" data-resolution-options></div>
+              </div>
+              <div class="fluxio-quality-slider" data-quality-slider>
+                <span class="fluxio-quality-slider-label">质量</span>
+                <div class="fluxio-quality-slider-track" data-quality-track>
+                  <span class="fluxio-quality-slider-mid-mark" aria-hidden="true"></span>
+                  <div class="fluxio-quality-slider-fill" data-quality-fill></div>
+                  <div class="fluxio-quality-slider-thumb" data-quality-thumb></div>
+                </div>
+                <div class="fluxio-quality-slider-labels">
+                  <span>体积优先</span>
+                  <span>推荐</span>
+                  <span>清晰优先</span>
+                </div>
+              </div>
+            </div>
+            <div class="fluxio-output-actions">
+              <button type="button" class="fluxio-btn fluxio-btn--primary fluxio-convert-btn fluxio-convert-btn--panel" data-convert-btn-panel disabled>开始转换</button>
+              <button type="button" class="fluxio-btn fluxio-btn--secondary fluxio-back-home-btn fluxio-back-home-btn--panel" data-back-home-btn-panel>回到主页</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第三级：任务列表 -->
+      <section class="fluxio-stage-page fluxio-page-task" data-page="task-list" hidden>
+        <div class="fluxio-task-inner">
+          <div class="fluxio-task-header">
+            <h2 class="fluxio-task-title">任务列表</h2>
+            <div class="fluxio-results-status" data-results-status hidden></div>
+          </div>
+          <ul class="fluxio-result-list" data-result-list></ul>
+          <p class="fluxio-placeholder fluxio-results-placeholder" data-results-placeholder>转换完成后将在此显示</p>
+          <div class="fluxio-task-footer">
+            <button type="button" class="fluxio-btn fluxio-btn--primary fluxio-download-all-btn" data-download-all-btn disabled>下载全部</button>
+            <button type="button" class="fluxio-btn fluxio-btn--secondary fluxio-back-home-btn" data-back-home-btn>回到首页</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第三级变体：任务错误态 -->
+      <section class="fluxio-stage-page fluxio-page-task-error" data-page="task-error" hidden>
+        <div class="fluxio-task-error-inner">
+          <p class="fluxio-error-state" data-task-error-msg>当前任务不存在或已失效，请返回首页重新开始</p>
+          <button type="button" class="fluxio-btn fluxio-btn--primary" data-task-error-back>返回首页</button>
+        </div>
+      </section>
+
+      <!-- 第四级：文件详情（当前版本仅保留正常展示态） -->
+      <section class="fluxio-stage-page fluxio-page-file-detail" data-page="file-detail" hidden>
+        <div class="fluxio-file-detail-content" data-file-detail-content>
+          <button type="button" class="fluxio-view-back-btn" data-file-detail-back aria-label="返回"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+          <div class="fluxio-view-preview" data-view-preview></div>
+          <div class="fluxio-view-info">
+            <h3 class="fluxio-view-info-title">文件信息</h3>
+            <dl class="fluxio-view-info-list" data-view-info></dl>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="fluxio.js"></script>
+</body>
+</html>

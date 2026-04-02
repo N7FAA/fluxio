@@ -1,0 +1,1377 @@
+/* Fluxio 基础样式 - 遵循 FLUXIO-COMPONENT-LIST / FLUXIO-CHANGES-FOR-CODE */
+
+:root {
+  /* 主色（P0 Spec：FLUXIO-COMPONENTS-TO-DEVELOP / FLUXIO-CHANGES-FOR-CODE） */
+  --fluxio-text-primary: #0A0A0A;
+  --fluxio-text-secondary: #64748B;
+  --fluxio-text-muted: #94A3B8;
+  --fluxio-bg-card: #FFFFFF;
+  --fluxio-bg-panel: #F3F6FA;
+  --fluxio-border: #E2E8F0;
+  --fluxio-border-light: #E2E8F0;
+  --fluxio-border-soft: #EEF2F7;
+  --fluxio-btn-primary: #1E2B45;
+  --fluxio-btn-primary-hover: #243455;
+  --fluxio-btn-primary-disabled: #9CA3AF;
+  --fluxio-accent: #2563EB;
+  --fluxio-tab-active: #FFFFFF;
+  --fluxio-tab-inactive: #F1F5F9;
+  --fluxio-success: #18bf93;
+  --fluxio-warning: #ffa524;
+  --fluxio-danger: #ff5454;
+  --fluxio-info: #3B82F6;
+  --fluxio-banner-error-bg: #FEF2F2;
+  --fluxio-banner-error-border: #FECACA;
+  --fluxio-banner-error-text: #B91C1B;
+  --fluxio-banner-warning-bg: #FFFBEB;
+  --fluxio-banner-warning-border: #FDE68A;
+  --fluxio-banner-warning-text: #92400E;
+  --fluxio-banner-success-bg: #D1FAE5;
+  --fluxio-banner-success-border: #A7F3D0;
+  --fluxio-banner-success-text: #065F46;
+  --fluxio-success-bg: #D1FAE5;
+  --fluxio-success-text: #065F46;
+  --fluxio-gradient-start: #EDE9FE;
+  --fluxio-gradient-mid: #FCE7F3;
+  --fluxio-gradient-mid2: #FFEDD5;
+  --fluxio-gradient-end: #FED7AA;
+
+  /* 间距 */
+  --fluxio-spacing-xs: 4px;
+  --fluxio-spacing-sm: 8px;
+  --fluxio-spacing-md: 16px;
+  --fluxio-spacing-lg: 24px;
+  --fluxio-spacing-xl: 32px;
+  --fluxio-spacing-2xl: 48px;
+  --fluxio-spacing-3xl: 64px;
+
+  /* 圆角 */
+  --fluxio-radius-sm: 6px;
+  --fluxio-radius-md: 8px;
+  --fluxio-radius-lg: 12px;
+  --fluxio-radius-xl: 16px;
+  --fluxio-radius-2xl: 24px;
+  --fluxio-radius-pill: 999px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+.fluxio {
+  font-family: "Alibaba PuHuiTi 3.0", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  color: var(--fluxio-text-primary);
+  background: linear-gradient(145deg, var(--fluxio-gradient-start) 0%, var(--fluxio-gradient-mid) 35%, var(--fluxio-gradient-mid2) 70%, var(--fluxio-gradient-end) 100%);
+  min-height: 100vh;
+}
+
+.fluxio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: var(--fluxio-spacing-3xl) var(--fluxio-spacing-lg);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.fluxio--wide {
+  max-width: 1320px;
+}
+
+/* 输出设置页：整体垂直居中 W-001 */
+.fluxio[data-view="output-settings"] {
+  justify-content: center;
+}
+
+.fluxio[data-view="output-settings"] .fluxio-stage {
+  flex: 0 1 auto;
+}
+
+.fluxio--detail {
+  max-width: 1320px;
+}
+
+/* Chrome：仅第一、二级显示 */
+.fluxio-chrome {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fluxio-chrome--hidden {
+  display: none;
+}
+
+/* Stage：主内容区整页替换 */
+.fluxio-stage {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fluxio-stage-page {
+  display: none;
+  flex: 1;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fluxio-stage-page:not([hidden]) {
+  display: flex;
+}
+
+/* 首页空态：整体垂直居中 H-001 */
+.fluxio[data-view="home"] {
+  justify-content: center;
+}
+
+.fluxio[data-view="home"] .fluxio-stage {
+  flex: 0 1 auto;
+}
+
+/* T-002 任务列表页：整体居中 */
+.fluxio[data-view="task-list"] {
+  justify-content: center;
+}
+
+.fluxio[data-view="task-list"] .fluxio-stage {
+  flex: 0 1 auto;
+}
+
+/* F-001 文件信息页整体居中 */
+.fluxio[data-view="file-detail"] {
+  justify-content: center;
+}
+
+.fluxio[data-view="file-detail"] .fluxio-stage {
+  flex: 0 1 auto;
+}
+
+/* 品牌区 */
+.fluxio-header {
+  text-align: center;
+  margin-bottom: var(--fluxio-spacing-lg);
+}
+
+.fluxio-title {
+  margin: 0 0 var(--fluxio-spacing-sm);
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--fluxio-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.fluxio-subtitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--fluxio-text-secondary);
+}
+
+/* Tab 胶囊导航 H-002 H-003 H-004 */
+.fluxio-tabs {
+  margin-bottom: var(--fluxio-spacing-xl);
+}
+
+.fluxio-tabs-track {
+  display: flex;
+  width: 416px;
+  justify-content: center;
+  gap: 48px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.24);
+  border-radius: var(--fluxio-radius-pill);
+}
+
+.fluxio-tab {
+  width: 104px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fluxio-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--fluxio-radius-pill);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-align: center;
+}
+
+.fluxio-tab:hover {
+  color: var(--fluxio-text-primary);
+}
+
+.fluxio-tab--active {
+  background: var(--fluxio-tab-active);
+  color: var(--fluxio-text-primary);
+}
+
+/* 首页上传页（第一级）H-002 H-004 H-005 H-006 H-007 */
+.fluxio-page-home {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.fluxio-upload {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+}
+
+.fluxio-upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 800px;
+  height: 400px;
+  padding: var(--fluxio-spacing-2xl);
+  background: var(--fluxio-bg-card);
+  border-radius: var(--fluxio-radius-2xl);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.fluxio-upload-text {
+  margin: 0 0 var(--fluxio-spacing-xs);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--fluxio-text-secondary);
+}
+
+.fluxio-upload-hint {
+  margin: 0 0 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--fluxio-text-muted);
+  text-align: center;
+}
+
+/* PrimaryButton / SecondaryButton（P0 Spec：48px、pill、#1E2B45、16px/600） */
+.fluxio-btn {
+  padding: 0 24px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--fluxio-radius-pill);
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.fluxio-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.fluxio-btn:disabled {
+  cursor: not-allowed;
+}
+
+.fluxio-btn--primary {
+  background: var(--fluxio-btn-primary);
+  color: #fff;
+}
+
+.fluxio-btn--primary:hover:not(:disabled) {
+  background: var(--fluxio-btn-primary-hover);
+}
+
+.fluxio-btn--primary:disabled {
+  background: var(--fluxio-btn-primary-disabled);
+  opacity: 1;
+}
+
+/* W-021 次要按钮文案颜色 #64748B */
+.fluxio-btn--secondary {
+  background: var(--fluxio-bg-panel);
+  color: #64748B;
+  border: 1px solid var(--fluxio-border);
+}
+
+.fluxio-btn--secondary:hover:not(:disabled) {
+  background: var(--fluxio-border-soft);
+}
+
+
+/* Banner（P0 反馈：error/warning/success 变体） */
+.fluxio-banner {
+  width: 100%;
+  padding: var(--fluxio-spacing-md);
+  margin-bottom: var(--fluxio-spacing-md);
+  font-size: 14px;
+  border-radius: var(--fluxio-radius-lg);
+  border: 1px solid;
+}
+
+.fluxio-banner--error {
+  background: var(--fluxio-banner-error-bg);
+  color: var(--fluxio-banner-error-text);
+  border-color: var(--fluxio-banner-error-border);
+}
+
+.fluxio-banner--warning {
+  background: var(--fluxio-banner-warning-bg);
+  color: var(--fluxio-banner-warning-text);
+  border-color: var(--fluxio-banner-warning-border);
+}
+
+.fluxio-banner--success {
+  background: var(--fluxio-banner-success-bg);
+  color: var(--fluxio-banner-success-text);
+  border-color: var(--fluxio-banner-success-border);
+}
+
+/* 兼容旧 data-error-banner */
+.fluxio-error-banner {
+  width: 100%;
+  padding: var(--fluxio-spacing-md);
+  margin-bottom: var(--fluxio-spacing-md);
+  background: var(--fluxio-banner-error-bg);
+  color: var(--fluxio-banner-error-text);
+  font-size: 14px;
+  border-radius: var(--fluxio-radius-lg);
+  border: 1px solid var(--fluxio-banner-error-border);
+}
+
+/* 文件列表、输出设置、结果区 */
+.fluxio-files,
+.fluxio-output,
+.fluxio-actions,
+.fluxio-results {
+  width: 100%;
+  margin-bottom: var(--fluxio-spacing-lg);
+}
+
+.fluxio-files-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--fluxio-spacing-sm);
+}
+
+.fluxio-file-count {
+  color: var(--fluxio-text-muted);
+  font-weight: 400;
+}
+
+.fluxio-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  color: var(--fluxio-accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.fluxio-link:hover {
+  text-decoration: underline;
+}
+
+
+.fluxio-output-row {
+  display: flex;
+  align-items: center;
+  gap: var(--fluxio-spacing-lg);
+}
+
+.fluxio-placeholder,
+.fluxio-placeholder-inline {
+  color: var(--fluxio-text-muted);
+  font-size: 14px;
+}
+
+.fluxio-placeholder {
+  margin: 0;
+}
+
+/* 隐藏文件输入 */
+.fluxio-file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 拖拽态 */
+.fluxio-upload-box.fluxio-upload-box--dragover {
+  border-color: var(--fluxio-text-muted);
+  border-width: 2px;
+  border-style: dashed;
+}
+
+.fluxio-upload-box.fluxio-upload-box--dragover .fluxio-upload-btn {
+  display: none;
+}
+
+/* 文件列表 */
+.fluxio-file-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fluxio-spacing-sm);
+}
+
+.fluxio-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--fluxio-spacing-md);
+  background: var(--fluxio-bg-panel);
+  border-radius: var(--fluxio-radius-lg);
+  border: 1px solid var(--fluxio-border-light);
+}
+
+.fluxio-file-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.fluxio-file-item-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fluxio-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fluxio-file-item-meta {
+  font-size: 12px;
+  color: var(--fluxio-text-muted);
+  margin-top: 2px;
+}
+
+.fluxio-file-item-delete {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--fluxio-radius-md);
+  color: var(--fluxio-text-muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.fluxio-file-item-delete:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--fluxio-text-primary);
+}
+
+/* 输出设置 */
+.fluxio-select-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fluxio-select-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fluxio-text-secondary);
+}
+
+/* OptionGroup 内 select */
+.fluxio-select {
+  height: 36px;
+  padding: 0 12px;
+  font-size: 14px;
+  color: var(--fluxio-text-primary);
+  background: var(--fluxio-bg-panel);
+  border: 1px solid var(--fluxio-border);
+  border-radius: var(--fluxio-radius-sm);
+  cursor: pointer;
+}
+
+/* 任务列表页（第三级）T-001 T-002 T-003 */
+.fluxio-page-task {
+  width: 100%;
+  max-width: 720px;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.fluxio-task-inner {
+  width: 720px;
+  min-width: 720px;
+  min-height: 624px;
+  background: var(--fluxio-bg-card);
+  border-radius: var(--fluxio-radius-2xl);
+  padding: var(--fluxio-spacing-xl);
+  border: 1px solid var(--fluxio-border-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.fluxio-task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--fluxio-spacing-md);
+  margin-bottom: var(--fluxio-spacing-lg);
+}
+
+.fluxio-task-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--fluxio-text-primary);
+}
+
+/* T-005 底部按钮等宽充满，居于卡片底部 */
+.fluxio-task-footer {
+  display: flex;
+  gap: var(--fluxio-spacing-md);
+  align-items: stretch;
+  flex-wrap: nowrap;
+  margin-top: auto;
+  padding-top: var(--fluxio-spacing-lg);
+  border-top: 1px solid var(--fluxio-border-light);
+  flex-shrink: 0;
+}
+
+.fluxio-task-footer .fluxio-download-all-btn,
+.fluxio-task-footer .fluxio-back-home-btn {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 结果区 */
+.fluxio-results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--fluxio-spacing-md);
+}
+
+.fluxio-results-status {
+  font-size: 14px;
+  color: var(--fluxio-text-secondary);
+}
+
+.fluxio-download-all-btn {
+  font-size: 16px;
+}
+
+.fluxio-result-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fluxio-spacing-md);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.fluxio-results-placeholder {
+  flex: 1;
+}
+
+/* G-003 任务列表卡片高度固定 100px */
+.fluxio-result-item {
+  display: flex;
+  align-items: center;
+  gap: var(--fluxio-spacing-md);
+  padding: var(--fluxio-spacing-md);
+  height: 100px;
+  min-height: 100px;
+  background: var(--fluxio-bg-card);
+  border-radius: var(--fluxio-radius-lg);
+  border: 1px solid var(--fluxio-border-light);
+}
+
+/* T-008 任务缩略图统一 68×68 */
+.fluxio-result-preview-wrap {
+  flex-shrink: 0;
+  width: 68px;
+  height: 68px;
+  border-radius: var(--fluxio-radius-md);
+  overflow: hidden;
+  background: var(--fluxio-bg-panel);
+}
+
+.fluxio-result-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* T-009 动图/视频仅展示首帧缩略图，不支持播放 */
+.fluxio-result-preview--video,
+.fluxio-result-preview--poster {
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.fluxio-result-preview-wrap video.fluxio-result-preview {
+  pointer-events: none;
+}
+
+.fluxio-result-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 主标题 16px semibold */
+.fluxio-result-item-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fluxio-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fluxio-result-item-meta {
+  font-size: 14px;
+  color: var(--fluxio-text-muted);
+  margin-top: 2px;
+}
+
+/* 辅助信息 14px */
+.fluxio-result-item-size {
+  font-size: 14px;
+  color: var(--fluxio-text-secondary);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* T-004 已完成态成功标识 */
+.fluxio-result-success-icon {
+  color: var(--fluxio-success);
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.fluxio-result-item-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--fluxio-spacing-sm);
+}
+
+/* T-007 查看/下载链接颜色 #299EFF */
+.fluxio-result-link {
+  font-size: 14px;
+  color: #299EFF;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+}
+
+.fluxio-result-link:hover {
+  text-decoration: underline;
+}
+
+.fluxio-results-placeholder[hidden],
+.fluxio-framerate-wrap[hidden] {
+  display: none !important;
+}
+
+/* TaskProgressRing（P0 反馈：环形进度，替换线性进度条） */
+.fluxio-progress-ring {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.fluxio-progress-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.fluxio-progress-ring-track {
+  fill: none;
+  stroke: var(--fluxio-border-light);
+  stroke-width: 4;
+}
+
+.fluxio-progress-ring-fill {
+  fill: none;
+  stroke: var(--fluxio-btn-primary);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease-out;
+}
+
+.fluxio-progress-ring-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fluxio-text-primary);
+}
+
+
+.fluxio-result-waiting-label {
+  font-size: 14px;
+  color: var(--fluxio-text-secondary);
+  flex-shrink: 0;
+}
+
+/* OptionGroup（P0 基础：单选 + 文字、横向排列） */
+.fluxio-option-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fluxio-spacing-md);
+}
+
+.fluxio-option-group-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fluxio-text-secondary);
+}
+
+.fluxio-option-group-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 36px;
+}
+
+.fluxio-option-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--fluxio-text-primary);
+}
+
+/* W-018 radio 与文案垂直居中 */
+.fluxio-option-item input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+  vertical-align: middle;
+  accent-color: var(--fluxio-btn-primary);
+  cursor: pointer;
+}
+
+/* QualitySlider（P0 基础：5 档、仅透出 3 文案、25%/75% 可拖拽） */
+.fluxio-quality-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* W-023 质量滑杆总宽度 296px（输出设置页） */
+.fluxio-output-options .fluxio-quality-slider {
+  width: 296px;
+}
+
+.fluxio-quality-slider-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fluxio-text-secondary);
+}
+
+/* 滑杆轨道与刻度轴垂直居中对齐 */
+.fluxio-quality-slider-track {
+  position: relative;
+  height: 8px;
+  background: var(--fluxio-border);
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: visible;
+}
+
+/* 刻度仅 25%、50%、75% 展示，0%、100% 不展示 */
+.fluxio-quality-slider-track::before,
+.fluxio-quality-slider-track::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: 8px;
+  background: var(--fluxio-text-muted);
+  opacity: 0.6;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.fluxio-quality-slider-track::before {
+  left: 25%;
+}
+
+.fluxio-quality-slider-track::after {
+  left: 75%;
+}
+
+.fluxio-quality-slider-mid-mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 8px;
+  background: var(--fluxio-text-muted);
+  opacity: 0.6;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.fluxio-quality-slider-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--fluxio-btn-primary);
+  border-radius: 4px;
+  transition: width 0.15s;
+  pointer-events: none;
+}
+
+/* 滑块圆心与轨道中心线严格垂直居中：仅用 top:50% + translate(-50%,-50%)，不叠加 margin-top */
+.fluxio-quality-slider-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background: var(--fluxio-bg-card);
+  border: 2px solid var(--fluxio-btn-primary);
+  border-radius: 50%;
+  cursor: grab;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  transition: left 0.15s;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+}
+
+.fluxio-quality-slider-thumb:hover,
+.fluxio-quality-slider-thumb:active {
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+}
+
+.fluxio-quality-slider-thumb:active {
+  cursor: grabbing;
+}
+
+.fluxio-quality-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--fluxio-text-muted);
+}
+
+.fluxio-quality-slider-labels span {
+  flex: 1;
+  text-align: center;
+}
+
+.fluxio-quality-slider-labels span:nth-child(1) { text-align: left; }
+.fluxio-quality-slider-labels span:nth-child(2) { text-align: center; }
+.fluxio-quality-slider-labels span:nth-child(3) { text-align: right; }
+
+/* Message（P0 反馈：白底、黑字、状态色图标、12px 圆角、轻边框） */
+.fluxio-message {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--fluxio-bg-card);
+  color: var(--fluxio-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 12px;
+  border: 1px solid var(--fluxio-border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.fluxio-message--success .fluxio-message-icon { color: var(--fluxio-success); }
+.fluxio-message--error .fluxio-message-icon { color: var(--fluxio-danger); }
+.fluxio-message--info .fluxio-message-icon { color: var(--fluxio-info); }
+.fluxio-message--warning .fluxio-message-icon { color: var(--fluxio-warning); }
+
+.fluxio-message-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 输出设置页（第二级） */
+.fluxio-output-settings {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.fluxio-output-layout {
+  display: flex;
+  width: 1280px;
+  min-width: 1280px;
+  height: 640px;
+  min-height: 640px;
+  background: var(--fluxio-bg-panel);
+  border-radius: var(--fluxio-radius-2xl);
+  border: 1px solid var(--fluxio-border-light);
+  overflow: hidden;
+}
+
+/* W-017 左侧文件面板内边距 32px */
+.fluxio-left-panel {
+  width: 920px;
+  flex: 0 0 920px;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  border-right: 1px solid var(--fluxio-border-light);
+}
+
+.fluxio-file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 158px);
+  gap: 16px;
+  flex: 1;
+  overflow-y: auto;
+  align-content: start;
+}
+
+/* FileThumbnailCard：12px 圆角（非 pill）W-005 */
+.fluxio-file-card {
+  position: relative;
+  width: 158px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--fluxio-spacing-md);
+  background: var(--fluxio-bg-card);
+  border-radius: var(--fluxio-radius-lg);
+  border: 1px solid var(--fluxio-border);
+  gap: 16px;
+}
+
+.fluxio-file-card:hover .fluxio-file-card-delete {
+  opacity: 1;
+}
+
+.fluxio-file-card-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  border-radius: var(--fluxio-radius-md);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.fluxio-file-card-delete:hover {
+  background: var(--fluxio-danger);
+}
+
+.fluxio-file-card-preview-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--fluxio-radius-md);
+  overflow: hidden;
+  background: var(--fluxio-bg-panel);
+  flex-shrink: 0;
+}
+
+.fluxio-file-card-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fluxio-file-card-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--fluxio-bg-panel);
+}
+
+.fluxio-file-card-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  width: 100%;
+  font-size: 14px;
+  color: var(--fluxio-text-secondary);
+  text-align: center;
+}
+
+.fluxio-file-card-name-base {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.fluxio-file-card-name-ext {
+  flex-shrink: 0;
+}
+
+.fluxio-left-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--fluxio-spacing-md);
+  margin-top: var(--fluxio-spacing-md);
+  padding-top: var(--fluxio-spacing-md);
+  border-top: 1px solid var(--fluxio-border-light);
+}
+
+/* W-020 清空文案字号 14px */
+.fluxio-clear-btn {
+  font-size: 14px;
+  color: var(--fluxio-text-muted);
+}
+
+.fluxio-right-panel {
+  width: 360px;
+  flex-shrink: 0;
+  padding: var(--fluxio-spacing-xl);
+  background: var(--fluxio-bg-card);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.fluxio-output-label {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--fluxio-text-primary);
+}
+
+.fluxio-output-options {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.fluxio-option-group {
+  gap: 12px;
+}
+
+/* W-018 W-019 单选与文案垂直居中，option-item 无额外间距 */
+.fluxio-option-item {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+}
+
+
+.fluxio-output-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--fluxio-spacing-md);
+  margin-top: auto;
+  flex-wrap: nowrap;
+}
+
+.fluxio-output-actions .fluxio-btn {
+  width: 142px;
+  flex: 0 0 142px;
+  justify-content: center;
+}
+
+.fluxio-convert-btn--panel {
+  margin-top: 0;
+}
+
+/* 查看文件模态 */
+.fluxio-view-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--fluxio-spacing-xl);
+}
+
+.fluxio-view-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.fluxio-view-content {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 960px;
+  max-height: 90vh;
+  background: var(--fluxio-bg-card);
+  border-radius: var(--fluxio-radius-2xl);
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* G-001 返回按钮：border、bg-panel、text-secondary，chevron-left */
+.fluxio-view-back-btn {
+  position: absolute;
+  top: var(--fluxio-spacing-md);
+  left: var(--fluxio-spacing-md);
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fluxio-bg-panel);
+  border: 1px solid var(--fluxio-border);
+  border-radius: var(--fluxio-radius-md);
+  cursor: pointer;
+  color: var(--fluxio-text-secondary);
+  z-index: 2;
+}
+
+.fluxio-view-back-btn svg {
+  flex-shrink: 0;
+}
+
+.fluxio-view-back-btn:hover {
+  background: var(--fluxio-border-soft);
+  color: var(--fluxio-text-primary);
+}
+
+.fluxio-view-preview {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--fluxio-spacing-xl);
+  background: var(--fluxio-bg-panel);
+}
+
+.fluxio-view-preview img,
+.fluxio-view-preview video {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+}
+
+.fluxio-view-info {
+  width: 320px;
+  flex-shrink: 0;
+  padding: var(--fluxio-spacing-xl);
+  border-left: 1px solid var(--fluxio-border-light);
+}
+
+.fluxio-view-info-title {
+  margin: 0 0 var(--fluxio-spacing-lg);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fluxio-text-primary);
+}
+
+/* F-003 标题与内容同一行；F-009 行间距 8px */
+.fluxio-view-info-list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--fluxio-text-secondary);
+}
+
+.fluxio-view-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  line-height: 1.5;
+}
+
+/* F-016 标题列固定宽度 64px */
+.fluxio-view-info-label {
+  flex-shrink: 0;
+  width: 64px;
+  font-weight: 500;
+  color: var(--fluxio-text-muted);
+}
+
+.fluxio-view-info-value {
+  word-break: break-word;
+  min-width: 0;
+}
+
+.fluxio-view-info-list dt {
+  font-weight: 500;
+  color: var(--fluxio-text-muted);
+}
+
+.fluxio-result-link button,
+.fluxio-result-view {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* 任务错误态（第三级变体） */
+.fluxio-page-task-error {
+  justify-content: center;
+}
+
+.fluxio-task-error-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--fluxio-spacing-lg);
+  padding: var(--fluxio-spacing-2xl);
+}
+
+.fluxio-error-state {
+  margin: 0;
+  color: var(--fluxio-text-secondary);
+  font-size: 14px;
+}
+
+/* 文件详情页（第四级）F-001 F-005 F-008 */
+.fluxio-page-file-detail {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.fluxio-page-file-detail .fluxio-file-detail-content {
+  position: relative;
+  display: flex;
+  width: 1280px;
+  min-width: 1280px;
+  height: 640px;
+  min-height: 640px;
+  background: var(--fluxio-bg-card);
+  border-radius: var(--fluxio-radius-2xl);
+  overflow: hidden;
+  border: 1px solid var(--fluxio-border-light);
+}
+
+.fluxio-file-detail-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--fluxio-spacing-md);
+  padding: var(--fluxio-spacing-2xl);
+}
+
+.fluxio-file-detail-error p {
+  margin: 0;
+  color: var(--fluxio-text-secondary);
+}
+
+/* F-008 回退按钮在面板左上角 */
+.fluxio-page-file-detail .fluxio-view-back-btn {
+  position: absolute;
+  top: var(--fluxio-spacing-md);
+  left: var(--fluxio-spacing-md);
+  z-index: 2;
+  background: var(--fluxio-bg-panel);
+  border: 1px solid var(--fluxio-border);
+  color: var(--fluxio-text-secondary);
+}
+
+/* F-005 F-010 左侧预览区 960×640，无 padding */
+.fluxio-page-file-detail .fluxio-view-preview {
+  position: relative;
+  width: 960px;
+  height: 640px;
+  flex: 0 0 960px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: var(--fluxio-bg-panel);
+}
+
+/* F-013 视频预览区背景黑色 */
+.fluxio-page-file-detail .fluxio-view-preview.fluxio-view-preview--video {
+  background: #000;
+}
+
+/* F-011 F-012 图片/动图：保持比例撑满 */
+.fluxio-page-file-detail .fluxio-view-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* F-012 F-013 动图/视频：保持比例撑满 */
+.fluxio-page-file-detail .fluxio-view-preview video {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* F-005 右侧信息区 320×640 */
+.fluxio-page-file-detail .fluxio-view-info {
+  width: 320px;
+  height: 640px;
+  flex: 0 0 320px;
+  padding: var(--fluxio-spacing-xl);
+  border-left: 1px solid var(--fluxio-border-light);
+  background: var(--fluxio-bg-card);
+}

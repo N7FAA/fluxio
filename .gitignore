@@ -1,0 +1,10 @@
+node_modules/
+logs/
+temp/
+.env
+.env.local
+.DS_Store
+*.log
+presets.json
+
+

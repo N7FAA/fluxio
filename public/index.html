@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FFmpeg 可视化工具</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>FFmpeg 转换控制台</h1>
+      <p>配置参数、保存预设、查看队列与预览片段</p>
+      <div id="root-info"></div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>输入与输出</h2>
+        <form id="job-form">
+          <div class="form-grid">
+            <label>
+              输入文件路径
+              <div class="file-input-wrapper">
+                <input
+                  type="text"
+                  name="inputPath"
+                  id="input-path"
+                  list="path-options"
+                  required
+                  placeholder="/Users/..."
+                />
+                <button type="button" class="file-select-btn" data-target="input-path">选择文件</button>
+                <input type="file" id="file-input-main" accept="video/*,audio/*" style="display: none;" />
+              </div>
+            </label>
+            <label>
+              输出目录
+              <input type="text" name="outputDir" placeholder="默认同输入目录" />
+            </label>
+            <label>
+              输出文件名
+              <input type="text" name="outputName" placeholder="默认沿用源文件名" />
+            </label>
+            <label>
+              容器格式
+              <select name="container">
+                <option value="webm">webm</option>
+                <option value="mp4">mp4</option>
+                <option value="mov">mov</option>
+                <option value="mkv">mkv</option>
+                <option value="gif">gif</option>
+                <option value="webp">webp</option>
+                <option value="apng">apng</option>
+              </select>
+            </label>
+          </div>
+
+          <fieldset>
+            <legend>视频参数</legend>
+            <div class="form-grid">
+              <label>
+                视频编码器
+                <select name="videoCodec" id="video-codec"></select>
+              </label>
+              <label>
+                像素格式
+                <select name="pixelFormat" id="pixel-format"></select>
+              </label>
+              <label>
+                CRF
+                <input type="number" name="crf" min="0" max="63" />
+              </label>
+              <label>
+                视频码率
+                <input type="text" name="videoBitrate" placeholder="如 4M / 2500k" />
+              </label>
+              <label>
+                帧率
+                <input type="number" name="frameRate" min="1" step="1" />
+              </label>
+              <label>
+                宽度
+                <input type="number" name="width" min="1" />
+              </label>
+              <label>
+                高度
+                <input type="number" name="height" min="1" />
+              </label>
+              <label>
+                额外滤镜
+                <input type="text" name="extraFilters" placeholder="如 format=rgba" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>音频参数</legend>
+            <div class="form-grid">
+              <label>
+                音频编码器
+                <select name="audioCodec" id="audio-codec"></select>
+              </label>
+              <label>
+                音频码率
+                <input type="text" name="audioBitrate" placeholder="128k" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>自定义参数</legend>
+            <label>
+              自定义参数 (逗号分隔)
+              <input
+                type="text"
+                name="customArgs"
+                placeholder="-deadline best,-cpu-used 0"
+              />
+            </label>
+          </fieldset>
+
+          <div class="actions">
+            <button type="submit">加入队列</button>
+            <button type="button" id="preview-btn">生成预览</button>
+            <button type="button" id="ffprobe-btn">查看元数据</button>
+          </div>
+        </form>
+        <pre id="ffprobe-output"></pre>
+      </section>
+
+      <section class="panel">
+        <h2>图标转换（PNG → ICNS）</h2>
+        <p>将 PNG 图片转换为 macOS 图标格式（.icns）</p>
+        <form id="icns-form" class="icns-form">
+          <div class="form-grid">
+            <label>
+              PNG 文件路径
+              <div class="file-input-wrapper">
+                <input
+                  type="text"
+                  name="pngPath"
+                  id="png-path"
+                  list="path-options"
+                  placeholder="/Users/...icon.png"
+                  required
+                />
+                <button type="button" class="file-select-btn" data-target="png-path">选择文件</button>
+                <input type="file" id="file-input-png" accept="image/png" style="display: none;" />
+              </div>
+            </label>
+            <label>
+              输出文件名（可选）
+              <input type="text" name="outputName" placeholder="默认: icon.icns" />
+            </label>
+          </div>
+          <div class="actions">
+            <button type="submit">转换为 ICNS</button>
+          </div>
+        </form>
+        <div id="icns-result" class="icns-result"></div>
+      </section>
+
+      <section class="panel">
+        <h2>预设管理</h2>
+        <div class="preset-controls">
+          <input type="text" id="preset-name" placeholder="预设名称" />
+          <button id="save-preset">保存当前表单为预设</button>
+        </div>
+        <ul id="preset-list"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>动图预设（WebP / APNG / GIF）</h2>
+        <p>一键配置常用动图导出参数：</p>
+        <div class="actions">
+          <button type="button" id="preset-webp-hq">
+            WebP 高质量（适合展示）
+          </button>
+          <button type="button" id="preset-webp-small">
+            WebP 小体积（适合列表/缩略图）
+          </button>
+          <button type="button" id="preset-apng">
+            APNG 透明动图
+          </button>
+          <button type="button" id="preset-gif">
+            GIF 基础动图
+          </button>
+        </div>
+        <small>提示：预设只会修改容器格式、编码器、像素格式、CRF/码率、帧率和尺寸，不会改动输入路径。</small>
+      </section>
+
+      <section class="panel">
+        <h2>预览结果</h2>
+        <div id="preview-area" class="preview-area">尚未生成预览</div>
+      </section>
+
+      <section class="panel">
+        <h2>视频对比</h2>
+        <form id="compare-form" class="compare-form">
+          <div class="form-grid">
+            <label>
+              视频 A 路径
+              <div class="file-input-wrapper">
+                <input
+                  type="text"
+                  name="compareA"
+                  id="compare-a-path"
+                  list="path-options"
+                  placeholder="/Users/...A.mov"
+                  required
+                />
+                <button type="button" class="file-select-btn" data-target="compare-a-path">选择文件</button>
+                <input type="file" id="file-input-compare-a" accept="video/*" style="display: none;" />
+              </div>
+            </label>
+            <label>
+              视频 B 路径
+              <div class="file-input-wrapper">
+                <input
+                  type="text"
+                  name="compareB"
+                  id="compare-b-path"
+                  list="path-options"
+                  placeholder="/Users/...B.webm"
+                  required
+                />
+                <button type="button" class="file-select-btn" data-target="compare-b-path">选择文件</button>
+                <input type="file" id="file-input-compare-b" accept="video/*" style="display: none;" />
+              </div>
+            </label>
+          </div>
+          <div class="actions">
+            <button type="submit">加载并播放</button>
+            <button type="button" id="compare-play">同时播放</button>
+            <button type="button" id="compare-pause">同时暂停</button>
+            <button type="button" id="compare-reset">回到起点</button>
+          </div>
+        </form>
+
+        <div class="compare-grid">
+          <div class="compare-item">
+            <h3>视频 A</h3>
+            <video id="video-left" controls muted playsinline></video>
+            <ul id="info-left" class="info-list">
+              <li>未加载</li>
+            </ul>
+          </div>
+          <div class="compare-item">
+            <h3>视频 B</h3>
+            <video id="video-right" controls muted playsinline></video>
+            <ul id="info-right" class="info-list">
+              <li>未加载</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>任务队列</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>状态</th>
+              <th>进度</th>
+              <th>输出</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="job-table-body"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <datalist id="path-options"></datalist>
+
+    <footer>
+      <small>FFmpeg 必须已安装并在 PATH 中可用。</small>
+    </footer>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
+

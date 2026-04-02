@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  ffmpeg-tool:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - NODE_ENV=production
+      - FFMPEG_ROOT=/app/temp/uploads
+      - MAX_FILE_SIZE=2147483648
+    volumes:
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: unless-stopped
+
+

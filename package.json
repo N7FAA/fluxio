@@ -1,0 +1,29 @@
+{
+  "name": "ffmpeg-tool",
+  "version": "1.0.0",
+  "description": "Local FFmpeg conversion UI with queue, preview, presets",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "docker:build": "docker build -t ffmpeg-tool .",
+    "docker:run": "docker run -p 4000:4000 ffmpeg-tool",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:fluxio": "node test-fluxio.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "chokidar": "^5.0.0",
+    "express": "^5.1.0",
+    "image-size": "^2.0.2",
+    "mime-types": "^3.0.2",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
