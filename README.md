@@ -33,7 +33,7 @@ npm install
 npm run dev
 ```
 
-访问 http://localhost:4000
+访问 (https://fluxio.help/)
 
 ### 使用 Docker
 
