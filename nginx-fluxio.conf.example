@@ -6,7 +6,8 @@
 
 server {
     listen 80;
-    server_name your-domain.com;   # 替换为你的域名或服务器 IP
+    # 域名 + 公网 IP（用 http://IP 验收时 Host 为 IP，必须写在这里，否则会落到默认站点得到 403）
+    server_name your-domain.com www.your-domain.com your-public-ip;
 
     # 客户端上传限制（MVP 统一 200MB）
     client_max_body_size 200M;

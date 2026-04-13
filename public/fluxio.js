@@ -71,6 +71,7 @@
     currentTab: 'image',
     files: [],
     jobs: new Map(),
+    completionFx: new Map(),
     pollTimer: null,
     view: 'home',
     currentTaskId: null,
@@ -91,6 +92,25 @@
     if (m2) return { page: 'file-detail', taskId: m2[1], fileId: m2[2] };
     return { page: 'home' };
   }
+
+  // #region agent log（仅 window.__FLUXIO_DEBUG__ === true 时上报，避免生产环境多余请求）
+  function __dbgLog(hypothesisId, location, message, data) {
+    if (typeof window === 'undefined' || window.__FLUXIO_DEBUG__ !== true) return;
+    fetch('http://127.0.0.1:7601/ingest/7b82761b-6b92-4fe6-8da1-9e60ca58cbd3', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '04d5ad' },
+      body: JSON.stringify({
+        sessionId: '04d5ad',
+        runId: typeof window !== 'undefined' && window.__fluxioDbgRunId ? window.__fluxioDbgRunId : 'pre-fix',
+        hypothesisId,
+        location,
+        message,
+        data: data || {},
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
 
   function navigateTo(page, taskId, fileId) {
     let p = '/';
@@ -147,6 +167,8 @@
   function notify(msg, isError = false) {
     const el = document.createElement('div');
     el.className = 'fluxio-message fluxio-message--' + (isError ? 'error' : 'success');
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
     el.innerHTML = '<span class="fluxio-message-icon">' + (isError ? '✕' : '✓') + '</span><span>' + escapeHtml(msg) + '</span>';
     el.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:9999;';
     document.body.appendChild(el);
@@ -196,6 +218,7 @@
       : (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('fluxio_current_task_source_tab')));
     state.files = [];
     state.jobs.clear();
+    state.completionFx.clear();
     state.currentTaskId = null;
     stopPolling();
     hideError();
@@ -220,6 +243,15 @@
   function renderOptionGroup(container, options, name, selected) {
     if (!container) return;
     const val = options.some((o) => o.value === selected) ? selected : (options[0]?.value || '');
+    // #region agent log
+    if (name === 'format') {
+      __dbgLog('H2', 'fluxio.js:renderOptionGroup', 'format coerced', {
+        selectedIn: selected,
+        resolvedVal: val,
+        coerced: val !== selected,
+      });
+    }
+    // #endregion
     if (name === 'format') state.format = val;
     else if (name === 'resolution') state.resolution = val;
     else if (name === 'framerate') state.framerate = val;
@@ -258,6 +290,14 @@
     updateQualitySliderUI();
   }
 
+  function getQualityAriaValueText(idx) {
+    const o = QUALITY_OPTIONS[idx];
+    if (o?.label) return o.label;
+    if (idx <= 1) return '体积优先';
+    if (idx >= 3) return '清晰优先';
+    return '推荐';
+  }
+
   function updateQualitySliderUI() {
     const track = document.querySelector('[data-quality-track]');
     const fill = document.querySelector('[data-quality-fill]');
@@ -266,6 +306,8 @@
     const pct = (state.qualityIndex / 4) * 100;
     fill.style.width = pct + '%';
     thumb.style.left = pct + '%';
+    thumb.setAttribute('aria-valuenow', String(state.qualityIndex));
+    thumb.setAttribute('aria-valuetext', getQualityAriaValueText(state.qualityIndex));
   }
 
   function initQualitySlider() {
@@ -297,6 +339,26 @@
       if (dragging) setFromPosition(e.clientX);
     });
     document.addEventListener('mouseup', () => { dragging = false; });
+
+    thumb.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        state.qualityIndex = Math.max(0, state.qualityIndex - 1);
+        updateQualitySliderUI();
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        state.qualityIndex = Math.min(4, state.qualityIndex + 1);
+        updateQualitySliderUI();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        state.qualityIndex = 0;
+        updateQualitySliderUI();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        state.qualityIndex = 4;
+        updateQualitySliderUI();
+      }
+    });
 
     updateQualitySliderUI();
   }
@@ -431,6 +493,7 @@
       return jobId ? [jobId, state.jobs.get(jobId), file, fileId] : null;
     }).filter(Boolean);
 
+    let needsCompletionFxRerender = false;
     const items = jobEntries.map(([jobId, job, file, fileId]) => {
       if (!job) return '';
       const fileInfo = file || state.files.find((x) => x.path === job.inputPath) || { name: '未知', size: 0 };
@@ -459,6 +522,24 @@
             : previewType === 'motion'
               ? `<img class="fluxio-result-preview fluxio-result-preview--poster" src="${downloadUrl}" alt="${escapeHtml(outputName)}">`
               : `<video class="fluxio-result-preview fluxio-result-preview--poster" src="${downloadUrl}" preload="metadata" muted playsinline></video>`;
+
+        const fxStart = state.completionFx.get(jobId);
+        const fxDurationMs = 900;
+        let showCompletionFx = false;
+        let completionProgress = 100;
+        if (typeof fxStart === 'number') {
+          const elapsed = Date.now() - fxStart;
+          if (elapsed < fxDurationMs) {
+            showCompletionFx = true;
+            completionProgress = Math.min(100, Math.max(0, (elapsed / fxDurationMs) * 100));
+            needsCompletionFxRerender = true;
+          } else {
+            state.completionFx.delete(jobId);
+          }
+        }
+        const ringRadius = 18;
+        const circumference = 2 * Math.PI * ringRadius;
+        const dashOffset = circumference - (completionProgress / 100) * circumference;
         return `
           <li class="fluxio-result-item fluxio-result-item--success">
             <div class="fluxio-result-preview-wrap">${previewHtml}</div>
@@ -469,10 +550,18 @@
                 <span>${sizeText}</span>
               </div>
             </div>
-            <div class="fluxio-result-item-actions">
-              <button type="button" class="fluxio-result-link fluxio-result-view" data-task-id="${state.currentTaskId}" data-file-id="${fileId}">查看</button>
-              <a class="fluxio-result-link" href="${downloadUrl}" download>下载</a>
-            </div>
+            ${showCompletionFx
+              ? `<div class="fluxio-progress-ring fluxio-progress-ring--inline fluxio-progress-ring--done" title="${Math.round(completionProgress)}%">
+                  <svg viewBox="0 0 40 40">
+                    <circle class="fluxio-progress-ring-track" cx="20" cy="20" r="${ringRadius}"/>
+                    <circle class="fluxio-progress-ring-fill" cx="20" cy="20" r="${ringRadius}" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"/>
+                  </svg>
+                  <span class="fluxio-progress-ring-text">${Math.round(completionProgress)}%</span>
+                </div>`
+              : `<div class="fluxio-result-item-actions">
+                  <button type="button" class="fluxio-result-link fluxio-result-view" data-task-id="${state.currentTaskId}" data-file-id="${fileId}">查看</button>
+                  <a class="fluxio-result-link" href="${downloadUrl}" download>下载</a>
+                </div>`}
           </li>
         `;
       }
@@ -488,7 +577,13 @@
           : '<div class="fluxio-file-card-placeholder"></div>';
         const ringRadius = 18;
         const circumference = 2 * Math.PI * ringRadius;
-        const dashOffset = circumference - (progress / 100) * circumference;
+        const isIndeterminate = progress <= 0;
+        const ringDashArray = isIndeterminate
+          ? `${Math.round(circumference * 0.62)} ${Math.round(circumference)}`
+          : `${circumference}`;
+        const dashOffset = isIndeterminate
+          ? circumference
+          : (circumference - (progress / 100) * circumference);
         const taskName = outputName || displayName;
         return `
           <li class="fluxio-result-item fluxio-result-item--converting">
@@ -497,10 +592,10 @@
               <div class="fluxio-result-item-name">${escapeHtml(safeDisplayName(taskName))}</div>
               <div class="fluxio-result-item-meta">转换中</div>
             </div>
-            <div class="fluxio-progress-ring" title="${progress}%">
+            <div class="fluxio-progress-ring ${isIndeterminate ? 'fluxio-progress-ring--indeterminate' : ''}" title="${progress}%">
               <svg viewBox="0 0 40 40">
                 <circle class="fluxio-progress-ring-track" cx="20" cy="20" r="${ringRadius}"/>
-                <circle class="fluxio-progress-ring-fill" cx="20" cy="20" r="${ringRadius}" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"/>
+                <circle class="fluxio-progress-ring-fill" cx="20" cy="20" r="${ringRadius}" stroke-dasharray="${ringDashArray}" stroke-dashoffset="${dashOffset}"/>
               </svg>
               <span class="fluxio-progress-ring-text">${progress}%</span>
             </div>
@@ -546,6 +641,11 @@
     });
 
     list.innerHTML = items.join('');
+    if (needsCompletionFxRerender) {
+      window.requestAnimationFrame(() => {
+        if (state.view === 'task-list') renderResults();
+      });
+    }
     placeholder.hidden = items.length > 0;
 
     const taskJobIds = Object.values(fileToJob);
@@ -740,6 +840,9 @@
       for (const j of json.data) {
         if (state.jobs.has(j.id)) {
           const prev = state.jobs.get(j.id);
+          if (prev?.status !== 'success' && j.status === 'success') {
+            state.completionFx.set(j.id, Date.now());
+          }
           state.jobs.set(j.id, { ...prev, ...j });
           if (j.status === 'running' || j.status === 'queued') hasActive = true;
         }
@@ -747,6 +850,9 @@
 
       renderResults();
       if (!hasActive) stopPolling();
+      // #region agent log
+      __dbgLog('H4', 'fluxio.js:pollJobs', 'tick', { hasActive, view: state.view });
+      // #endregion
     } catch (e) {
       console.error('Poll error', e);
     }
@@ -876,6 +982,12 @@
     }
 
     if (state.view === 'home' && state.files.length > 0) {
+      // #region agent log
+      __dbgLog('H3', 'fluxio.js:uploadFiles', 'navigate to output-settings', {
+        pathname: window.location.pathname,
+        viewAfter: 'output-settings',
+      });
+      // #endregion
       showPage('output-settings');
     } else if (state.view === 'output-settings') {
       renderFileGrid();
@@ -894,6 +1006,15 @@
     const fileToJob = task?.fileToJob || {};
     const jobId = fileToJob[fileId];
     const job = jobId ? state.jobs.get(jobId) : null;
+    // #region agent log
+    __dbgLog('H1', 'fluxio.js:renderFileDetail', 'detail state', {
+      taskId,
+      fileId,
+      hasTask: !!task,
+      hasJobId: !!jobId,
+      jobStatus: job ? job.status : null,
+    });
+    // #endregion
     const fileIndex = fileId ? parseInt(String(fileId).replace('file_', ''), 10) : -1;
     const file = task?.files?.[fileIndex];
 
@@ -998,6 +1119,14 @@
 
   function applyRoute() {
     const route = getRoute();
+    // #region agent log
+    __dbgLog('H1', 'fluxio.js:applyRoute', 'route+tasks', {
+      pathname: window.location.pathname,
+      route,
+      taskKeys: Object.keys(state.tasks || {}),
+      currentTaskId: state.currentTaskId,
+    });
+    // #endregion
     if (route.page === 'home') {
       showPage('home');
       return;
@@ -1009,6 +1138,12 @@
         showPage('task-list', route.taskId);
         startPolling();
       } else {
+        // #region agent log
+        __dbgLog('H1', 'fluxio.js:applyRoute', 'task-list missing in memory', {
+          taskId: route.taskId,
+          hasTask: !!task,
+        });
+        // #endregion
         showPage('task-error');
       }
       return;

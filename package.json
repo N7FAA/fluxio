@@ -1,6 +1,6 @@
 {
   "name": "ffmpeg-tool",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Local FFmpeg conversion UI with queue, preview, presets",
   "main": "server.js",
   "scripts": {

@@ -11,10 +11,12 @@
     <!-- Chrome：仅第一、二级（首页/输出设置）显示 -->
     <div class="fluxio-chrome" data-chrome>
       <header class="fluxio-header">
-        <h1 class="fluxio-title">Fluxio, 让动效轻松落地</h1>
+        <h1 class="fluxio-title">
+          <span class="fluxio-title-brand">Fluxio</span><span class="fluxio-title-rest"> 让动效轻松落地</span>
+        </h1>
         <p class="fluxio-subtitle">面向线上页面的开放转码工具，帮助素材更快实现</p>
       </header>
-      <nav class="fluxio-tabs">
+      <nav class="fluxio-tabs" aria-label="素材类型">
         <div class="fluxio-tabs-track">
           <button type="button" class="fluxio-tab fluxio-tab--active" data-tab="image">图片</button>
           <button type="button" class="fluxio-tab" data-tab="motion">动态图像</button>
@@ -64,10 +66,19 @@
               </div>
               <div class="fluxio-quality-slider" data-quality-slider>
                 <span class="fluxio-quality-slider-label">质量</span>
-                <div class="fluxio-quality-slider-track" data-quality-track>
+                <div class="fluxio-quality-slider-track" data-quality-track role="presentation">
                   <span class="fluxio-quality-slider-mid-mark" aria-hidden="true"></span>
-                  <div class="fluxio-quality-slider-fill" data-quality-fill></div>
-                  <div class="fluxio-quality-slider-thumb" data-quality-thumb></div>
+                  <div class="fluxio-quality-slider-fill" data-quality-fill aria-hidden="true"></div>
+                  <div
+                    class="fluxio-quality-slider-thumb"
+                    data-quality-thumb
+                    role="slider"
+                    tabindex="0"
+                    aria-valuemin="0"
+                    aria-valuemax="4"
+                    aria-valuenow="2"
+                    aria-label="输出质量"
+                  ></div>
                 </div>
                 <div class="fluxio-quality-slider-labels">
                   <span>体积优先</span>
@@ -89,7 +100,7 @@
         <div class="fluxio-task-inner">
           <div class="fluxio-task-header">
             <h2 class="fluxio-task-title">任务列表</h2>
-            <div class="fluxio-results-status" data-results-status hidden></div>
+            <div class="fluxio-results-status" data-results-status role="status" aria-live="polite" aria-atomic="true" hidden></div>
           </div>
           <ul class="fluxio-result-list" data-result-list></ul>
           <p class="fluxio-placeholder fluxio-results-placeholder" data-results-placeholder>转换完成后将在此显示</p>
